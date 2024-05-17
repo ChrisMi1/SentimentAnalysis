@@ -4,9 +4,13 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import pandas as pa
 
+
 df = pa.read_csv('C:/Users/xrist/Desktop/ProcessLanguage/tripadvisor_hotel_reviews.csv')
 print(df.info())
 print(df.head())
+chunk_size = 1000  # Adjust chunk size as needed
+for i in range(0, len(df), chunk_size):
+    print(df.iloc[i:i+chunk_size])
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
