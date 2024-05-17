@@ -3,21 +3,29 @@
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import pandas as pa
+import re
+import demoji
+import unicodedata as uni
+
+def clean_data(text):
+    text = re.sub(r"http\S+", "", text) #remove url
+    emojis = demoji.findall(text) #replace emojis with text
+    for emoji in emojis:
+        text = text.replace(emoji, " " + emojis[emoji].split(":")[0])
+    text = uni.normalize('NFKD', text) #unicode normalization
+#    spell = SpellChecker()
+#    corrected_text = []
+#    words = text.split()
+#    for word in words:
+#        corrected_text.append(spell.correction(word))
+#    text = ' '.join(corrected_text)
+
+    #text = str(TextBlob(text).correct())
+    return text
 
 
 df = pa.read_csv('C:/Users/xrist/Desktop/ProcessLanguage/tripadvisor_hotel_reviews.csv')
 print(df.info())
 print(df.head())
-chunk_size = 1000  # Adjust chunk size as needed
-for i in range(0, len(df), chunk_size):
-    print(df.iloc[i:i+chunk_size])
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+for index, reviews in df.iterrows():
+    df.at[index, 'Review'] = clean_data(str(df.at[index, 'Review']))
